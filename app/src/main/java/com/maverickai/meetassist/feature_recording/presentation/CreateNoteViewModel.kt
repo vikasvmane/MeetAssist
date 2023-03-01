@@ -30,11 +30,11 @@ class CreateNoteViewModel @Inject constructor(private val createNoteRepository: 
     fun getChatGPTData(prompt: String) {
         viewModelScope.launch {
             _loading.value = true
-
             createNoteRepository.getChatGPTResponse(prompt).flowOn(Dispatchers.IO).catch {
                 _loading.value = false
                 _error.value = it.message
             }.collect {
+                _gptResponse.value = it
                 _loading.value = false
                 _error.value = null
             }

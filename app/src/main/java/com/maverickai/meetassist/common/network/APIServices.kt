@@ -6,6 +6,6 @@ import retrofit2.http.Body
 import retrofit2.http.POST
 
 interface APIServices {
-    @POST("v1/completions")
+    @POST("/v1/completions")
     suspend fun getGPTData(@Body gptRequest: GPTRequest): GPTResponse
 }
