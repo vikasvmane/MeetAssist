@@ -6,11 +6,16 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.maverickai.meetassist.feature_recording.domain.CreateNoteRepository
 import com.maverickai.meetassist.feature_recording.domain.model.GPTResponse
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class CreateNoteViewModel @Inject constructor(private val createNoteRepository: CreateNoteRepository): ViewModel() {
+@HiltViewModel
+class CreateNoteViewModel @Inject constructor(private val createNoteRepository: CreateNoteRepository) :
+    ViewModel() {
     private val _gptResponse = MutableLiveData<GPTResponse>()
     val gptResponse: LiveData<GPTResponse> = _gptResponse
     private val _loading = MutableLiveData<Boolean>()
@@ -26,12 +31,12 @@ class CreateNoteViewModel @Inject constructor(private val createNoteRepository: 
         viewModelScope.launch {
             _loading.value = true
 
-            createNoteRepository.getChatGPTResponse(prompt).invoke().flowOn(Dispatchers.IO).catch {
+            createNoteRepository.getChatGPTResponse(prompt).flowOn(Dispatchers.IO).catch {
                 _loading.value = false
-                error.value = it.message
+                _error.value = it.message
             }.collect {
                 _loading.value = false
-                error.value = null
+                _error.value = null
             }
         }
     }

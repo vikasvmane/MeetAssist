@@ -27,7 +27,8 @@ class CreateNoteRepositoryImpl @Inject constructor(
                     maxTokens = MAX_TOKENS,
                     topP = TOP_P,
                     frequencyPenalty = FREQUENCY_PENALTY,
-                    presencePenalty = PRESENCE_PENALTY
+                    presencePenalty = PRESENCE_PENALTY,
+                    prompt = "$PROMPT$prompt"
                 )
             )
         }
@@ -40,5 +41,6 @@ class CreateNoteRepositoryImpl @Inject constructor(
         const val TOP_P = 1
         const val FREQUENCY_PENALTY = 0
         const val PRESENCE_PENALTY = 0
+        const val PROMPT = "Get summary from the below text\n"
     }
 }

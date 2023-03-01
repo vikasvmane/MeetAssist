@@ -10,10 +10,12 @@ import androidx.navigation.fragment.findNavController
 import com.maverickai.meetassist.R
 import com.maverickai.meetassist.databinding.FragmentFirstBinding
 import com.maverickai.meetassist.feature_list.domain.model.Note
+import dagger.hilt.android.AndroidEntryPoint
 
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
  */
+@AndroidEntryPoint
 class NotesListFragment : Fragment() {
 
     private var _binding: FragmentFirstBinding? = null

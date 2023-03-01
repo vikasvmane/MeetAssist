@@ -11,6 +11,8 @@ import android.speech.SpeechRecognizer
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.ImageView
@@ -18,14 +20,17 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
 import com.maverickai.meetassist.R
 import com.maverickai.meetassist.databinding.FragmentSecondBinding
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 
 
 /**
  * A simple [Fragment] subclass as the second destination in the navigation.
  */
+@AndroidEntryPoint
 class CreateNoteFragment : Fragment() {
     private val RecordAudioRequestCode = 1
     private var speechRecognizer: SpeechRecognizer? = null
@@ -33,6 +38,7 @@ class CreateNoteFragment : Fragment() {
     private var micButton: ImageView? = null
 
     private var _binding: FragmentSecondBinding? = null
+    private lateinit var viewModel: CreateNoteViewModel
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -40,7 +46,7 @@ class CreateNoteFragment : Fragment() {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         _binding = FragmentSecondBinding.inflate(inflater, container, false)
         return binding.root
@@ -49,7 +55,7 @@ class CreateNoteFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
+        viewModel = ViewModelProvider(this)[CreateNoteViewModel::class.java]
         if (ContextCompat.checkSelfPermission(
                 requireContext(), Manifest.permission.RECORD_AUDIO
             ) != PackageManager.PERMISSION_GRANTED
@@ -57,8 +63,30 @@ class CreateNoteFragment : Fragment() {
             checkPermission()
         }
 
+        viewModel.loading.observe(viewLifecycleOwner) {
+            if (it == true) binding.progressBar.visibility = VISIBLE
+            else binding.progressBar.visibility = GONE
+        }
+        viewModel.error.observe(viewLifecycleOwner) {
+            it?.let { error ->
+                Toast.makeText(context, "Error - $error", Toast.LENGTH_SHORT).show()
+            }
+        }
+        viewModel.gptResponse.observe(viewLifecycleOwner) {
+            it?.let { response ->
+                binding.textOutput.visibility = VISIBLE
+                binding.textOutput.text = "Output :\n $response"
+            }
+        }
+
         editText = binding.text
-        micButton = binding.button
+        micButton = binding.buttonMic
+        binding.buttonSubmit.setOnClickListener {
+            if (editText?.text.toString().isNotEmpty())
+                viewModel.getChatGPTData(editText?.text.toString())
+            else
+                Toast.makeText(context, "Speech text cannot be empty", Toast.LENGTH_SHORT).show()
+        }
         speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context)
 
         val speechRecognizerIntent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH)
@@ -72,6 +100,7 @@ class CreateNoteFragment : Fragment() {
             override fun onBeginningOfSpeech() {
                 editText?.setText("")
                 editText?.hint = "Listening..."
+                binding.textOutput.visibility = GONE
             }
 
             override fun onRmsChanged(v: Float) {}
