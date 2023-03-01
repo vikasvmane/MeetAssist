@@ -5,15 +5,18 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.maverickai.meetassist.R
 import com.maverickai.meetassist.databinding.FragmentFirstBinding
 import com.maverickai.meetassist.feature_list.domain.model.Note
+import dagger.hilt.android.AndroidEntryPoint
 
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
  */
-class FirstFragment : Fragment() {
+@AndroidEntryPoint
+class NotesListFragment : Fragment() {
 
     private var _binding: FragmentFirstBinding? = null
 
@@ -24,7 +27,7 @@ class FirstFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
 
         _binding = FragmentFirstBinding.inflate(inflater, container, false)
         return binding.root
@@ -47,6 +50,10 @@ class FirstFragment : Fragment() {
 
                 }
             })
+        binding.fab.setOnClickListener { view ->
+            activity?.findNavController(R.id.nav_host_fragment_content_main)
+                ?.navigate(R.id.SecondFragment)
+        }
     }
 
     override fun onDestroyView() {
