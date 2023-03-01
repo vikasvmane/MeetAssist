@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.maverickai.meetassist.R
 import com.maverickai.meetassist.databinding.FragmentFirstBinding
+import com.maverickai.meetassist.feature_list.domain.model.Note
 
 /**
  * A simple [Fragment] subclass as the default destination in the navigation.
@@ -33,9 +34,19 @@ class FirstFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.buttonFirst.setOnClickListener {
-            findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
-        }
+        binding.recyclerNotes.adapter =
+            NotesRecyclerviewAdapter(emptyList(), object : OnNotesClickListener {
+                override fun onNoteClicked(note: Note) {
+                    findNavController().navigate(
+                        R.id.action_FirstFragment_to_SecondFragment,
+                        Bundle().apply {
+                            putParcelable("Note", note)
+
+                        }
+                    )
+
+                }
+            })
     }
 
     override fun onDestroyView() {
