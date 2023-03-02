@@ -85,8 +85,9 @@ class CreateNoteFragment : Fragment() {
                 // Output is only visible when its a success response
                 binding.textOutput.visibility = VISIBLE
                 if (!response.choices.isNullOrEmpty()) {
+                    binding.tilSpeechDisplay.hint = getString(R.string.speech_transcript_hint)
                     // Choices contains the actual output to be shown to the user
-                    binding.textOutput.text = "Output :\n ${response.choices[0]?.text}"
+                    binding.textOutput.text = "$OUTPUT_TEXT${response.choices[0]?.text}"
                 }
             }
         }
@@ -95,11 +96,12 @@ class CreateNoteFragment : Fragment() {
             if (binding.editSpeechDisplay.text.toString().isNotEmpty())
                 viewModel.getChatGPTData(binding.editSpeechDisplay.text.toString())
             else
-                Toast.makeText(context, "Speech text cannot be empty", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, getString(R.string.empty_speech_error), Toast.LENGTH_SHORT)
+                    .show()
         }
 
         binding.buttonSaveNote.setOnClickListener {
-            if (!binding.textOutput.text.isNullOrEmpty() && noteToSave != null) {
+            if (!binding.textOutput.text.isNullOrEmpty()) {
                 // Checks if title is present, if not, insist to add title
                 if (binding.editNotesTitle.text.toString().isNotBlank()) {
                     noteToSave = Note(
@@ -112,11 +114,12 @@ class CreateNoteFragment : Fragment() {
                 } else
                     Toast.makeText(
                         context,
-                        "Its good to put a title to a save note",
+                        getString(R.string.empty_title_error),
                         Toast.LENGTH_SHORT
                     ).show()
             } else
-                Toast.makeText(context, "No notes found to save", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, getString(R.string.empty_output_error), Toast.LENGTH_SHORT)
+                    .show()
         }
 
         speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context)
@@ -135,6 +138,7 @@ class CreateNoteFragment : Fragment() {
         if (activity != null) {
             (activity as MainActivity).supportActionBar?.title = note.title
         }
+        binding.tilSpeechDisplay.hint = getString(R.string.speech_transcript_hint)
         binding.textOutput.text = "$OUTPUT_TEXT${note.summary}"
         binding.editSpeechDisplay.setText(note.transcript)
         binding.editNotesTitle.setText(note.title)
@@ -145,7 +149,7 @@ class CreateNoteFragment : Fragment() {
             override fun onReadyForSpeech(bundle: Bundle) {}
             override fun onBeginningOfSpeech() {
                 binding.editSpeechDisplay.setText("")
-                binding.editSpeechDisplay.hint = "Listening..."
+                binding.tilSpeechDisplay.hint = getString(R.string.speech_listening_hint)
                 binding.textOutput.visibility = GONE
             }
 
@@ -205,7 +209,7 @@ class CreateNoteFragment : Fragment() {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         if (requestCode == RECORD_AUDIO_REQUEST_CODE && grantResults.isNotEmpty()) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) Toast.makeText(
-                requireContext(), "Permission Granted", Toast.LENGTH_SHORT
+                requireContext(), getString(R.string.record_permission_granted), Toast.LENGTH_SHORT
             ).show()
         }
     }

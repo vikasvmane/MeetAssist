@@ -3,7 +3,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:fillViewport="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -28,8 +29,7 @@
             android:text="@string/save_note"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textOutput" />
+            app:layout_constraintStart_toStartOf="parent" />
 
         <EditText
             android:id="@+id/editNotesTitle"
@@ -42,28 +42,15 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <EditText
-            android:id="@+id/editSpeechDisplay"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:focusable="false"
-            android:focusableInTouchMode="false"
-            android:hint="@string/tap_to_speak"
-            android:inputType="textMultiLine"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/editNotesTitle" />
-
         <ImageView
             android:id="@+id/buttonMic"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:backgroundTint="#F9F8FA"
             android:src="@drawable/ic_mic_black_off"
-            app:layout_constraintBottom_toBottomOf="@+id/editSpeechDisplay"
+            app:layout_constraintBottom_toBottomOf="@+id/tilSpeechDisplay"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/editSpeechDisplay"
-            app:layout_constraintTop_toTopOf="@+id/editSpeechDisplay" />
+            app:layout_constraintTop_toTopOf="@id/tilSpeechDisplay" />
 
         <ProgressBar
             android:id="@+id/progressBar"
@@ -84,12 +71,32 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="16dp"
             android:padding="16dp"
-            tools:text="Output"
             android:textStyle="bold"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/buttonProcess" />
+            app:layout_constraintTop_toBottomOf="@id/buttonProcess"
+            tools:text="Output" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilSpeechDisplay"
+            android:layout_width="0dp"
+            android:layout_marginTop="16dp"
+            android:layout_height="wrap_content"
+            android:hint="@string/tap_to_speak"
+            app:layout_constraintEnd_toStartOf="@id/buttonMic"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/editNotesTitle">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editSpeechDisplay"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:inputType="textMultiLine"
+                tools:text="Listening" />
+        </com.google.android.material.textfield.TextInputLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

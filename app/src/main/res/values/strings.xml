@@ -6,8 +6,14 @@
     <string name="second_fragment_label">Create New Note</string>
     <string name="no_notes_found_error">No notes found</string>
     <string name="create_a_new_note_from_error">Create a new note from</string>
-    <string name="tap_to_speak">Tap to Speak</string>
+    <string name="tap_to_speak">Tap mic icon to Speak</string>
     <string name="title">Title</string>
     <string name="process_speech">Process Speech</string>
     <string name="save_note">Save Note</string>
+    <string name="empty_title_error">Its good to put a title to a save note</string>
+    <string name="empty_output_error">No notes found to save</string>
+    <string name="empty_speech_error">Speech text cannot be empty</string>
+    <string name="speech_listening_hint">Listening...</string>
+    <string name="speech_transcript_hint">Speech Transcript</string>
+    <string name="record_permission_granted">Permission Granted</string>
 </resources>
