@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.maverickai.meetassist.feature_list.domain.model.Note
 import com.maverickai.meetassist.feature_recording.domain.CreateNoteRepository
 import com.maverickai.meetassist.feature_recording.domain.model.GPTResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -38,6 +39,12 @@ class CreateNoteViewModel @Inject constructor(private val createNoteRepository: 
                 _loading.value = false
                 _error.value = null
             }
+        }
+    }
+
+    fun saveNote(note: Note){
+        viewModelScope.launch {
+            createNoteRepository.saveNote(note)
         }
     }
 }
