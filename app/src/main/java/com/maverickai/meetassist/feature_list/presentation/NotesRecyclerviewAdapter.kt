@@ -7,7 +7,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.maverickai.meetassist.R
-import com.maverickai.meetassist.feature_create_note.domain.model.ChatGPTResponseModel
+import com.maverickai.meetassist.feature_create_note.domain.model.DetailResponse
 import com.maverickai.meetassist.feature_list.domain.model.Note
 
 class NotesRecyclerviewAdapter(
@@ -54,7 +54,7 @@ class NotesRecyclerviewAdapter(
      */
     private fun getSummaryText(output: String?): String? {
         return try {
-            val response = Gson().fromJson(output, ChatGPTResponseModel::class.java)
+            val response = Gson().fromJson(output, DetailResponse::class.java)
             String.format(FINAL_OUTPUT, response.summary)
         } catch (e: Exception) {
             output

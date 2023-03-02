@@ -39,10 +39,10 @@ class CreateNoteRepositoryImpl @Inject constructor(
     companion object {
         const val MODEL = "text-davinci-003"
         const val TEMPERATURE = 0.7
-        const val MAX_TOKENS = 2459
+        const val MAX_TOKENS = 4000
         const val TOP_P = 1
         const val FREQUENCY_PENALTY = 0
         const val PRESENCE_PENALTY = 0
-        const val PROMPT = "Comprehend below phrase and provide summary in \"JSON\" format, also identify domain within this context\n"
+        const val PROMPT = "Provide in JSON format including summary with financials if applicable, TODOs of actors post conversation, domain. Do not include conversation in response.\n"
     }
 }

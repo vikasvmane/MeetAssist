@@ -23,7 +23,8 @@ import com.maverickai.meetassist.MainActivity
 import com.maverickai.meetassist.R
 import com.maverickai.meetassist.common.Constants.BUNDLE_KEY_NOTE
 import com.maverickai.meetassist.databinding.FragmentCreateNoteBinding
-import com.maverickai.meetassist.feature_create_note.domain.model.ChatGPTResponseModel
+import com.maverickai.meetassist.feature_create_note.domain.model.DetailResponse
+import com.maverickai.meetassist.feature_create_note.domain.model.Financials
 import com.maverickai.meetassist.feature_list.domain.model.Note
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
@@ -70,6 +71,15 @@ class CreateNoteFragment : Fragment() {
                 setReadOnlyData(note)
             }
         }
+        setupObservers()
+        setupListeners()
+
+        speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context)
+        speechRecognizerListenerSetup()
+        micIconListenerSetup()
+    }
+
+    private fun setupObservers() {
         // Loading indicator
         viewModel.loading.observe(viewLifecycleOwner) {
             if (it == true) binding.progressBar.visibility = VISIBLE
@@ -85,16 +95,17 @@ class CreateNoteFragment : Fragment() {
         viewModel.gptResponse.observe(viewLifecycleOwner) {
             it?.let { response ->
                 // Output is only visible when its a success response
-                binding.textOutput.visibility = VISIBLE
+                binding.cardViewOutput.visibility = VISIBLE
                 if (!response.choices.isNullOrEmpty()) {
                     binding.tilSpeechDisplay.hint = getString(R.string.speech_transcript_hint)
                     // Choices contains the actual output to be shown to the user
-                    binding.textOutput.text =
-                        "$OUTPUT_TEXT${getSummaryDomainText(response.choices[0]?.text)}"
+                    binding.textOutput.text = getSummaryDomainText(response.choices[0]?.text)
                 }
             }
         }
+    }
 
+    private fun setupListeners() {
         binding.buttonProcess.setOnClickListener {
             if (binding.editSpeechDisplay.text.toString().isNotEmpty())
                 viewModel.getChatGPTData(binding.editSpeechDisplay.text.toString())
@@ -110,7 +121,7 @@ class CreateNoteFragment : Fragment() {
                     noteToSave = Note(
                         title = binding.editNotesTitle.text.toString(),
                         transcript = binding.editSpeechDisplay.text.toString(),
-                        summary = binding.textOutput.text.toString().replace(OUTPUT_TEXT, "")
+                        summary = binding.textOutput.text.toString()
                     )
                     viewModel.saveNote(noteToSave!!)
                     activity?.onBackPressed()
@@ -124,18 +135,14 @@ class CreateNoteFragment : Fragment() {
                 Toast.makeText(context, getString(R.string.empty_output_error), Toast.LENGTH_SHORT)
                     .show()
         }
-
-        speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context)
-        speechRecognizerListenerSetup()
-        micIconListenerSetup()
     }
 
     private fun createReadOnlyForm() {
         binding.buttonProcess.visibility = INVISIBLE
         binding.buttonSaveNote.visibility = GONE
-        binding.buttonMic.visibility = INVISIBLE
+        binding.buttonMic.visibility = GONE
         binding.editNotesTitle.visibility = GONE
-        binding.textOutput.visibility = VISIBLE
+        binding.cardViewOutput.visibility = VISIBLE
     }
 
     private fun setReadOnlyData(note: Note) {
@@ -144,7 +151,7 @@ class CreateNoteFragment : Fragment() {
         }
 
         binding.tilSpeechDisplay.hint = getString(R.string.speech_transcript_hint)
-        binding.textOutput.text = "$OUTPUT_TEXT${getSummaryDomainText(note.summary)}"
+        binding.textOutput.text = getSummaryDomainText(note.summary)
         binding.editSpeechDisplay.setText(note.transcript)
         binding.editNotesTitle.setText(note.title)
     }
@@ -155,7 +162,6 @@ class CreateNoteFragment : Fragment() {
             override fun onBeginningOfSpeech() {
                 binding.editSpeechDisplay.setText("")
                 binding.tilSpeechDisplay.hint = getString(R.string.speech_listening_hint)
-                binding.textOutput.visibility = GONE
             }
 
             override fun onRmsChanged(v: Float) {}
@@ -163,6 +169,7 @@ class CreateNoteFragment : Fragment() {
             override fun onEndOfSpeech() {}
             override fun onError(i: Int) {}
             override fun onResults(bundle: Bundle) {
+                binding.tilSpeechDisplay.hint = getString(R.string.speech_transcript_hint)
                 binding.buttonMic.setImageResource(R.drawable.ic_mic_black_off)
                 val data = bundle.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
                 binding.editSpeechDisplay.setText(data!![0])
@@ -224,16 +231,28 @@ class CreateNoteFragment : Fragment() {
      */
     private fun getSummaryDomainText(output: String?): String? {
         return try {
-            val response = Gson().fromJson(output, ChatGPTResponseModel::class.java)
-            String.format(FINAL_OUTPUT, response.summary, response.domain)
+            val response = Gson().fromJson(output, DetailResponse::class.java)
+            String.format(
+                FINAL_OUTPUT,
+                response.summary,
+                response.domain,
+                response.tODOs,
+                getFinancials(response.financials)
+            )
         } catch (e: Exception) {
             output
         }
     }
 
+    private fun getFinancials(response: Financials?): String {
+        if (response?.propertyValue != null)
+            return String.format(FINANCE_OUTPUT, response.propertyValue)
+        return ""
+    }
+
     companion object {
-        const val OUTPUT_TEXT = "Output :\n"
         const val RECORD_AUDIO_REQUEST_CODE = 1
-        const val FINAL_OUTPUT = "Summary : %s\nDomain : %s"
+        const val FINAL_OUTPUT = "Summary : %s\nDomain : %s\nTODOs : %s\n%s"
+        const val FINANCE_OUTPUT = "Property Value : %s"
     }
 }
