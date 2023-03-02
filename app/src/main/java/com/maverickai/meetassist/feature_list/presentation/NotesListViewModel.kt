@@ -8,9 +8,6 @@ import androidx.lifecycle.viewModelScope
 import com.maverickai.meetassist.feature_list.domain.NotesListRepository
 import com.maverickai.meetassist.feature_list.domain.model.Note
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -24,14 +21,9 @@ class NotesListViewModel @Inject constructor(private val notesListRepository: No
     val error: LiveData<String?> = _error
     fun getNotes() {
         viewModelScope.launch {
-            notesListRepository.getNotes().flowOn(Dispatchers.IO).catch {
-                _error.value = it.message
-                _notes.value = null
-            }.collect {
-                _notes.value = it
-                Log.d("notes list size ${it.size}", it.toString())
-            }
+            val notesList = notesListRepository.getNotes()
+            _notes.value = notesList
+            Log.d("notes list size ${notesList.size}", notesList.toString())
         }
     }
-
 }
