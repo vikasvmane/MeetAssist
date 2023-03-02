@@ -12,7 +12,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        android:text="Process Speech"
+        android:text="@string/process_speech"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/buttonMic" />
@@ -21,7 +21,7 @@
         android:id="@+id/text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Tap to Speak"
+        android:hint="@string/tap_to_speak"
         android:inputType="textMultiLine"
         android:padding="10dp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -58,11 +58,9 @@
         android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"
         android:padding="16dp"
-        android:text="Output"
+        android:text="@string/output"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/buttonSubmit" />
-
-
 </androidx.constraintlayout.widget.ConstraintLayout>
