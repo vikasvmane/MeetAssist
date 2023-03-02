@@ -2,6 +2,8 @@ package com.maverickai.meetassist.common.di
 
 import android.app.Application
 import com.maverickai.meetassist.common.db.NotesRoomDatabase
+import com.maverickai.meetassist.feature_list.data.NotesListRepositoryImpl
+import com.maverickai.meetassist.feature_list.domain.NotesListRepository
 import com.maverickai.meetassist.feature_recording.data.datasource.LocalNotesDataSourceImpl
 import com.maverickai.meetassist.feature_recording.data.datasource.RemoteGPTDataSourceImpl
 import com.maverickai.meetassist.feature_recording.data.repository.CreateNoteRepositoryImpl
@@ -25,6 +27,10 @@ object AppModule {
     @Provides
     fun getGPTDataSource(gptDataSourceImpl: RemoteGPTDataSourceImpl): GPTDataSource =
         gptDataSourceImpl
+
+    @Provides
+    fun getNotesListRepository(notesListRepositoryImpl: NotesListRepositoryImpl): NotesListRepository =
+        notesListRepositoryImpl
 
     @Provides
     fun getCreateNotesRepository(createNoteRepositoryImpl: CreateNoteRepositoryImpl): CreateNoteRepository =
