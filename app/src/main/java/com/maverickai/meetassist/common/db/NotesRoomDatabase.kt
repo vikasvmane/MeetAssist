@@ -6,7 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.maverickai.meetassist.feature_list.domain.model.Note
 
-@Database(entities = [Note::class], version = 1)
+@Database(entities = [Note::class], version = 2)
 abstract class NotesRoomDatabase : RoomDatabase() {
     abstract fun notesDao(): NotesDao
 

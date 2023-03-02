@@ -1,4 +1,4 @@
-package com.maverickai.meetassist.feature_recording.presentation
+package com.maverickai.meetassist.feature_create_note.presentation
 
 import android.Manifest
 import android.content.Intent
@@ -18,6 +18,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.maverickai.meetassist.MainActivity
 import com.maverickai.meetassist.R
 import com.maverickai.meetassist.databinding.FragmentCreateNoteBinding
 import com.maverickai.meetassist.feature_list.domain.model.Note
@@ -126,7 +127,9 @@ class CreateNoteFragment : Fragment() {
     }
 
     private fun setReadOnlyData(note: Note) {
-        activity?.title = note.title
+        if (activity != null) {
+            (activity as MainActivity).supportActionBar?.title = note.title
+        }
         binding.textOutput.text = "Output: \n${note.summary}"
         binding.editSpeechDisplay.setText(note.transcript)
         binding.editNotesTitle.setText(note.title)

@@ -17,7 +17,7 @@
     </fragment>
     <fragment
         android:id="@+id/SecondFragment"
-        android:name="com.maverickai.meetassist.feature_recording.presentation.CreateNoteFragment"
+        android:name="com.maverickai.meetassist.feature_create_note.presentation.CreateNoteFragment"
         android:label="@string/second_fragment_label"
         tools:layout="@layout/fragment_create_note">
 

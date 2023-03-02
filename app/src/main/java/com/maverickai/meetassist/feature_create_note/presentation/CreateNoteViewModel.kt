@@ -1,12 +1,13 @@
-package com.maverickai.meetassist.feature_recording.presentation
+package com.maverickai.meetassist.feature_create_note.presentation
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.maverickai.meetassist.feature_list.domain.model.Note
-import com.maverickai.meetassist.feature_recording.domain.CreateNoteRepository
-import com.maverickai.meetassist.feature_recording.domain.model.GPTResponse
+import com.maverickai.meetassist.feature_create_note.domain.CreateNoteRepository
+import com.maverickai.meetassist.feature_create_note.domain.model.GPTResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.catch
@@ -42,9 +43,13 @@ class CreateNoteViewModel @Inject constructor(private val createNoteRepository: 
         }
     }
 
-    fun saveNote(note: Note){
+    fun saveNote(note: Note) {
         viewModelScope.launch {
-            createNoteRepository.saveNote(note)
+            val saveNotesResponse = createNoteRepository.saveNote(note)
+            Log.d("Save Notes", saveNotesResponse.toString())
+            if (saveNotesResponse != 1L) {
+                _error.value = "Error in saving notes"
+            }
         }
     }
 }

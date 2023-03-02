@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
+import com.maverickai.meetassist.MainActivity
 import com.maverickai.meetassist.R
 import com.maverickai.meetassist.databinding.FragmentNotesListBinding
 import com.maverickai.meetassist.feature_list.domain.model.Note
@@ -33,7 +34,9 @@ class NotesListFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        activity?.title = "My Notes"
+        if (activity != null) {
+            (activity as MainActivity).supportActionBar?.title = "My Notes"
+        }
         _binding = FragmentNotesListBinding.inflate(inflater, container, false)
         return binding.root
 

@@ -1,5 +1,6 @@
 package com.maverickai.meetassist.feature_list.presentation
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -28,6 +29,7 @@ class NotesListViewModel @Inject constructor(private val notesListRepository: No
                 _notes.value = null
             }.collect {
                 _notes.value = it
+                Log.d("notes list size ${it.size}", it.toString())
             }
         }
     }

@@ -1,4 +1,4 @@
-package com.maverickai.meetassist.feature_recording.domain.model
+package com.maverickai.meetassist.feature_create_note.domain.model
 
 import kotlinx.parcelize.Parcelize
 import android.os.Parcelable

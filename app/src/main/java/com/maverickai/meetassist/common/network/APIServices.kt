@@ -1,7 +1,7 @@
 package com.maverickai.meetassist.common.network
 
-import com.maverickai.meetassist.feature_recording.domain.model.GPTRequest
-import com.maverickai.meetassist.feature_recording.domain.model.GPTResponse
+import com.maverickai.meetassist.feature_create_note.domain.model.GPTRequest
+import com.maverickai.meetassist.feature_create_note.domain.model.GPTResponse
 import retrofit2.http.Body
 import retrofit2.http.POST
 
