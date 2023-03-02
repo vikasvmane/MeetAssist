@@ -33,7 +33,7 @@ class NotesListFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-
+        activity?.title = "My Notes"
         _binding = FragmentNotesListBinding.inflate(inflater, container, false)
         return binding.root
 
@@ -61,7 +61,6 @@ class NotesListFragment : Fragment() {
                                     putParcelable("Note", note)
                                 }
                             )
-
                         }
                     })
             } ?: let {
@@ -70,7 +69,7 @@ class NotesListFragment : Fragment() {
             }
         }
         viewModel.getNotes()
-        binding.fab.setOnClickListener { view ->
+        binding.fab.setOnClickListener { _ ->
             activity?.findNavController(R.id.nav_host_fragment_content_main)
                 ?.navigate(R.id.SecondFragment)
         }

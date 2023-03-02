@@ -105,7 +105,10 @@ class CreateNoteFragment : Fragment() {
 
         binding.buttonSaveNote.setOnClickListener {
             if (!binding.textOutput.text.isNullOrEmpty() && noteToSave != null)
+            {
                 viewModel.saveNote(noteToSave!!)
+                activity?.onBackPressed()
+            }
             else
                 Toast.makeText(context, "No notes found to save", Toast.LENGTH_SHORT).show()
         }
@@ -119,11 +122,11 @@ class CreateNoteFragment : Fragment() {
         binding.buttonProcess.visibility = INVISIBLE
         binding.buttonSaveNote.visibility = GONE
         binding.buttonMic.visibility = INVISIBLE
-        binding.editNotesTitle.visibility = INVISIBLE
+        binding.editNotesTitle.visibility = GONE
     }
 
     private fun setReadOnlyData(note: Note) {
-        requireActivity().title = note.title
+        activity?.title = note.title
         binding.textOutput.text = "Output: \n${note.summary}"
         binding.editSpeechDisplay.setText(note.transcript)
         binding.editNotesTitle.setText(note.title)

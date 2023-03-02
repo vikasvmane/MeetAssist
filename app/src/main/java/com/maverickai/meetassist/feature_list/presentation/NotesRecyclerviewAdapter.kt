@@ -20,6 +20,7 @@ class NotesRecyclerviewAdapter(
     class ViewHolder(view: View) :
         RecyclerView.ViewHolder(view) {
         var textNoteTitle: TextView = itemView.findViewById(R.id.textNotesTitle)
+        var textNoteSummary: TextView = itemView.findViewById(R.id.textSummary)
     }
 
     // Create new views (invoked by the layout manager)
@@ -36,6 +37,8 @@ class NotesRecyclerviewAdapter(
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         val note = dataSet[position]
         viewHolder.textNoteTitle.text = note.title
+        viewHolder.textNoteSummary.text = note.summary
+
         viewHolder.itemView.setOnClickListener {
             onNotesClickListener.onNoteClicked(note)
         }
