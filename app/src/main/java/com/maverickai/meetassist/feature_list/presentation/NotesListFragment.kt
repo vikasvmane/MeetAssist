@@ -13,6 +13,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
 import com.maverickai.meetassist.MainActivity
 import com.maverickai.meetassist.R
+import com.maverickai.meetassist.common.Constants.BUNDLE_KEY_NOTE
 import com.maverickai.meetassist.databinding.FragmentNotesListBinding
 import com.maverickai.meetassist.feature_list.domain.model.Note
 import dagger.hilt.android.AndroidEntryPoint
@@ -49,6 +50,8 @@ class NotesListFragment : Fragment() {
         viewModel.error.observe(viewLifecycleOwner) {
             it?.let { error ->
                 Toast.makeText(context, "Error - $error", Toast.LENGTH_SHORT).show()
+                binding.textNotesError1.visibility = VISIBLE
+                binding.textNotesError2.visibility = VISIBLE
             }
         }
         viewModel.notes.observe(viewLifecycleOwner) {
@@ -61,7 +64,7 @@ class NotesListFragment : Fragment() {
                             findNavController().navigate(
                                 R.id.action_FirstFragment_to_SecondFragment,
                                 Bundle().apply {
-                                    putParcelable("Note", note)
+                                    putParcelable(BUNDLE_KEY_NOTE, note)
                                 }
                             )
                         }

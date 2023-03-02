@@ -20,6 +20,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.maverickai.meetassist.MainActivity
 import com.maverickai.meetassist.R
+import com.maverickai.meetassist.common.Constants.BUNDLE_KEY_NOTE
 import com.maverickai.meetassist.databinding.FragmentCreateNoteBinding
 import com.maverickai.meetassist.feature_list.domain.model.Note
 import dagger.hilt.android.AndroidEntryPoint
@@ -30,7 +31,6 @@ import java.util.*
  */
 @AndroidEntryPoint
 class CreateNoteFragment : Fragment() {
-    private val RecordAudioRequestCode = 1
     private var speechRecognizer: SpeechRecognizer? = null
 
     private var _binding: FragmentCreateNoteBinding? = null
@@ -53,46 +53,40 @@ class CreateNoteFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel = ViewModelProvider(this)[CreateNoteViewModel::class.java]
+        // Checks record permission
         if (ContextCompat.checkSelfPermission(
                 requireContext(), Manifest.permission.RECORD_AUDIO
             ) != PackageManager.PERMISSION_GRANTED
         ) {
             checkPermission()
         }
+        // Makes the fragment readonly if note is passed by clicking on my notes
         arguments?.let {
-            val note: Note? = it.getParcelable("Note")
+            val note: Note? = it.getParcelable(BUNDLE_KEY_NOTE)
             if (note != null) {
                 createReadOnlyForm()
                 setReadOnlyData(note)
             }
         }
-
+        // Loading indicator
         viewModel.loading.observe(viewLifecycleOwner) {
             if (it == true) binding.progressBar.visibility = VISIBLE
             else binding.progressBar.visibility = GONE
         }
+        // Error indicator
         viewModel.error.observe(viewLifecycleOwner) {
             it?.let { error ->
                 Toast.makeText(context, "Error - $error", Toast.LENGTH_SHORT).show()
             }
         }
+        // ChatGPT api response
         viewModel.gptResponse.observe(viewLifecycleOwner) {
             it?.let { response ->
+                // Output is only visible when its a success response
                 binding.textOutput.visibility = VISIBLE
                 if (!response.choices.isNullOrEmpty()) {
+                    // Choices contains the actual output to be shown to the user
                     binding.textOutput.text = "Output :\n ${response.choices[0]?.text}"
-                    if (binding.editNotesTitle.text.toString().isNotBlank()) {
-                        noteToSave = Note(
-                            title = binding.editNotesTitle.text.toString(),
-                            transcript = binding.editSpeechDisplay.text.toString(),
-                            summary = response.choices[0]?.text.toString()
-                        )
-                    } else
-                        Toast.makeText(
-                            context,
-                            "Its good to put a title to a save note",
-                            Toast.LENGTH_SHORT
-                        ).show()
                 }
             }
         }
@@ -105,12 +99,23 @@ class CreateNoteFragment : Fragment() {
         }
 
         binding.buttonSaveNote.setOnClickListener {
-            if (!binding.textOutput.text.isNullOrEmpty() && noteToSave != null)
-            {
-                viewModel.saveNote(noteToSave!!)
-                activity?.onBackPressed()
-            }
-            else
+            if (!binding.textOutput.text.isNullOrEmpty() && noteToSave != null) {
+                // Checks if title is present, if not, insist to add title
+                if (binding.editNotesTitle.text.toString().isNotBlank()) {
+                    noteToSave = Note(
+                        title = binding.editNotesTitle.text.toString(),
+                        transcript = binding.editSpeechDisplay.text.toString(),
+                        summary = binding.textOutput.text.toString().replace(OUTPUT_TEXT, "")
+                    )
+                    viewModel.saveNote(noteToSave!!)
+                    activity?.onBackPressed()
+                } else
+                    Toast.makeText(
+                        context,
+                        "Its good to put a title to a save note",
+                        Toast.LENGTH_SHORT
+                    ).show()
+            } else
                 Toast.makeText(context, "No notes found to save", Toast.LENGTH_SHORT).show()
         }
 
@@ -130,7 +135,7 @@ class CreateNoteFragment : Fragment() {
         if (activity != null) {
             (activity as MainActivity).supportActionBar?.title = note.title
         }
-        binding.textOutput.text = "Output: \n${note.summary}"
+        binding.textOutput.text = "$OUTPUT_TEXT${note.summary}"
         binding.editSpeechDisplay.setText(note.transcript)
         binding.editNotesTitle.setText(note.title)
     }
@@ -187,7 +192,9 @@ class CreateNoteFragment : Fragment() {
     private fun checkPermission() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             ActivityCompat.requestPermissions(
-                requireActivity(), arrayOf(Manifest.permission.RECORD_AUDIO), RecordAudioRequestCode
+                requireActivity(),
+                arrayOf(Manifest.permission.RECORD_AUDIO),
+                RECORD_AUDIO_REQUEST_CODE
             )
         }
     }
@@ -196,10 +203,15 @@ class CreateNoteFragment : Fragment() {
         requestCode: Int, permissions: Array<String?>, grantResults: IntArray
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        if (requestCode == RecordAudioRequestCode && grantResults.isNotEmpty()) {
+        if (requestCode == RECORD_AUDIO_REQUEST_CODE && grantResults.isNotEmpty()) {
             if (grantResults[0] == PackageManager.PERMISSION_GRANTED) Toast.makeText(
                 requireContext(), "Permission Granted", Toast.LENGTH_SHORT
             ).show()
         }
+    }
+
+    companion object {
+        const val OUTPUT_TEXT = "Output :\n"
+        const val RECORD_AUDIO_REQUEST_CODE = 1
     }
 }
