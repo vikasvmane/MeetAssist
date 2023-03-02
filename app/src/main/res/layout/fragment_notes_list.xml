@@ -11,6 +11,35 @@
         android:layout_height="match_parent"
         tools:context=".feature_list.presentation.NotesListFragment">
 
+        <TextView
+            android:id="@+id/textNotesError1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawablePadding="8dp"
+            android:text="@string/no_notes_found_error"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:drawableStartCompat="@drawable/ic_baseline_assignment_late_24"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:drawableTint="@color/grey" />
+
+        <TextView
+            android:id="@+id/textNotesError2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:drawablePadding="8dp"
+            android:text="@string/create_a_new_note_from_error"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            app:drawableEndCompat="@drawable/ic_baseline_add_circle_24"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textNotesError1"
+            app:drawableTint="@color/grey" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recyclerNotes"
             android:layout_width="match_parent"
@@ -30,4 +59,5 @@
         android:layout_marginEnd="@dimen/fab_margin"
         android:layout_marginBottom="16dp"
         app:srcCompat="@android:drawable/ic_input_add" />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

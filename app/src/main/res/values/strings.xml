@@ -4,7 +4,6 @@
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">Meet Note List</string>
     <string name="second_fragment_label">Create New Note</string>
-    <string name="process_speech">Process Speech</string>
-    <string name="tap_to_speak">Tap to Speak</string>
-    <string name="output">Output</string>
+    <string name="no_notes_found_error">No notes found</string>
+    <string name="create_a_new_note_from_error">Create a new note from</string>
 </resources>
