@@ -20,15 +20,17 @@ class CreateNoteRepositoryImpl @Inject constructor(
 
     override suspend fun getChatGPTResponse(prompt: String): Flow<GPTResponse> {
         return flow {
-            gptDataSource.getGPTData(
-                GPTRequest(
-                    model = MODEL,
-                    temperature = TEMPERATURE,
-                    maxTokens = MAX_TOKENS,
-                    topP = TOP_P,
-                    frequencyPenalty = FREQUENCY_PENALTY,
-                    presencePenalty = PRESENCE_PENALTY,
-                    prompt = "$PROMPT$prompt"
+            emit(
+                gptDataSource.getGPTData(
+                    GPTRequest(
+                        model = MODEL,
+                        temperature = TEMPERATURE,
+                        maxTokens = MAX_TOKENS,
+                        topP = TOP_P,
+                        frequencyPenalty = FREQUENCY_PENALTY,
+                        presencePenalty = PRESENCE_PENALTY,
+                        prompt = "$PROMPT$prompt"
+                    )
                 )
             )
         }
