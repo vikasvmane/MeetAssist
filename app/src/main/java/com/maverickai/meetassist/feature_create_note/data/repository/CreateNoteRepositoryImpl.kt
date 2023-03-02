@@ -43,6 +43,6 @@ class CreateNoteRepositoryImpl @Inject constructor(
         const val TOP_P = 1
         const val FREQUENCY_PENALTY = 0
         const val PRESENCE_PENALTY = 0
-        const val PROMPT = "Get summary from the below text\n"
+        const val PROMPT = "Comprehend below phrase and provide summary in \"JSON\" format, also identify domain within this context\n"
     }
 }

@@ -2,7 +2,7 @@
     <string name="app_name">MeetAssist</string>
     <string name="action_settings">Settings</string>
     <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">Meet Note List</string>
+    <string name="first_fragment_label">My Notes</string>
     <string name="second_fragment_label">Create New Note</string>
     <string name="no_notes_found_error">No notes found</string>
     <string name="create_a_new_note_from_error">Create a new note from</string>
