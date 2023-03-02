@@ -5,7 +5,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.google.gson.Gson
 import com.maverickai.meetassist.R
+import com.maverickai.meetassist.feature_create_note.domain.model.ChatGPTResponseModel
 import com.maverickai.meetassist.feature_list.domain.model.Note
 
 class NotesRecyclerviewAdapter(
@@ -37,7 +39,7 @@ class NotesRecyclerviewAdapter(
     override fun onBindViewHolder(viewHolder: ViewHolder, position: Int) {
         val note = dataSet[position]
         viewHolder.textNoteTitle.text = note.title
-        viewHolder.textNoteSummary.text = note.summary
+        viewHolder.textNoteSummary.text = getSummaryText(note.summary)
 
         viewHolder.itemView.setOnClickListener {
             onNotesClickListener.onNoteClicked(note)
@@ -47,4 +49,19 @@ class NotesRecyclerviewAdapter(
     // Return the size of your dataset (invoked by the layout manager)
     override fun getItemCount() = dataSet.size
 
+    /**
+     * Formats the data based on summary
+     */
+    private fun getSummaryText(output: String?): String? {
+        return try {
+            val response = Gson().fromJson(output, ChatGPTResponseModel::class.java)
+            String.format(FINAL_OUTPUT, response.summary)
+        } catch (e: Exception) {
+            output
+        }
+    }
+
+    companion object {
+        const val FINAL_OUTPUT = "Summary : %s"
+    }
 }

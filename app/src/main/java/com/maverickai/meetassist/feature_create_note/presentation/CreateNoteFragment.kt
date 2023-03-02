@@ -18,10 +18,12 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.google.gson.Gson
 import com.maverickai.meetassist.MainActivity
 import com.maverickai.meetassist.R
 import com.maverickai.meetassist.common.Constants.BUNDLE_KEY_NOTE
 import com.maverickai.meetassist.databinding.FragmentCreateNoteBinding
+import com.maverickai.meetassist.feature_create_note.domain.model.ChatGPTResponseModel
 import com.maverickai.meetassist.feature_list.domain.model.Note
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
@@ -87,7 +89,8 @@ class CreateNoteFragment : Fragment() {
                 if (!response.choices.isNullOrEmpty()) {
                     binding.tilSpeechDisplay.hint = getString(R.string.speech_transcript_hint)
                     // Choices contains the actual output to be shown to the user
-                    binding.textOutput.text = "$OUTPUT_TEXT${response.choices[0]?.text}"
+                    binding.textOutput.text =
+                        "$OUTPUT_TEXT${getSummaryDomainText(response.choices[0]?.text)}"
                 }
             }
         }
@@ -132,14 +135,16 @@ class CreateNoteFragment : Fragment() {
         binding.buttonSaveNote.visibility = GONE
         binding.buttonMic.visibility = INVISIBLE
         binding.editNotesTitle.visibility = GONE
+        binding.textOutput.visibility = VISIBLE
     }
 
     private fun setReadOnlyData(note: Note) {
         if (activity != null) {
             (activity as MainActivity).supportActionBar?.title = note.title
         }
+
         binding.tilSpeechDisplay.hint = getString(R.string.speech_transcript_hint)
-        binding.textOutput.text = "$OUTPUT_TEXT${note.summary}"
+        binding.textOutput.text = "$OUTPUT_TEXT${getSummaryDomainText(note.summary)}"
         binding.editSpeechDisplay.setText(note.transcript)
         binding.editNotesTitle.setText(note.title)
     }
@@ -214,8 +219,21 @@ class CreateNoteFragment : Fragment() {
         }
     }
 
+    /**
+     * Formats the data based on summary and domain
+     */
+    private fun getSummaryDomainText(output: String?): String? {
+        return try {
+            val response = Gson().fromJson(output, ChatGPTResponseModel::class.java)
+            String.format(FINAL_OUTPUT, response.summary, response.domain)
+        } catch (e: Exception) {
+            output
+        }
+    }
+
     companion object {
         const val OUTPUT_TEXT = "Output :\n"
         const val RECORD_AUDIO_REQUEST_CODE = 1
+        const val FINAL_OUTPUT = "Summary : %s\nDomain : %s"
     }
 }
