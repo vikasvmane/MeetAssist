@@ -16,7 +16,7 @@ class HeaderInterceptor : Interceptor {
     }
 
     companion object {
-        const val CLIENT_KEY = "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"
+        const val CLIENT_KEY = "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"
         const val AUTHORIZATION = "Authorization"
         const val BEARER = "Bearer "
         const val CONTENT_TYPE = "Content-Type"
